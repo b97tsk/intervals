@@ -1,4 +1,4 @@
-// Package intervals is a library for manipulating sets of discrete intervals.
+// Package intervals is a library for manipulating sets of intervals.
 package intervals
 
 import "sort"
@@ -25,7 +25,7 @@ func (r Interval[E]) Unwrap() (E, E) {
 	return r.Low, r.High
 }
 
-// A Set is a slice of discrete intervals sorted in ascending order.
+// A Set is a slice of separate intervals sorted in ascending order.
 // The zero value for a Set, i.e. a nil Set, is an empty set.
 //
 // Since Interval is half-open, you can never add the maximum value of E into
@@ -89,7 +89,7 @@ func (x *Set[E]) AddRange(lo, hi E) {
 		}
 	}
 
-	if i == j { // Case 3 (where lo and hi overlaps).
+	if i == j { // Case 3 (where lo and hi overlap with each other).
 		if lo.Compare(hi) < 0 {
 			s = append(s, Interval[E]{})
 			copy(s[i+1:], s[i:])
