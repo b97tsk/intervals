@@ -34,10 +34,11 @@ func symmetricDifference[E Elem[E]](x, y, out Set[E]) Set[E] {
 		r := y[0]
 		y = y[1:]
 
-	Again:
 		i := sort.Search(len(x), func(i int) bool { return x[i].High.Compare(r.Low) > 0 })
 		z = appendIntervals(z, x[:i]...)
 		x = x[i:]
+
+	Again:
 		j := sort.Search(len(x), func(i int) bool { return x[i].Low.Compare(r.High) >= 0 })
 
 		if j == 0 {

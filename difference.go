@@ -30,7 +30,6 @@ func (x Set[E]) Difference(y Set[E]) Set[E] {
 		r := y[0]
 		y = y[1:]
 
-	Again:
 		i := sort.Search(len(x), func(i int) bool { return x[i].High.Compare(r.Low) > 0 })
 
 		if !inv {
@@ -38,6 +37,8 @@ func (x Set[E]) Difference(y Set[E]) Set[E] {
 		}
 
 		x = x[i:]
+
+	Again:
 		j := sort.Search(len(x), func(i int) bool { return x[i].Low.Compare(r.High) >= 0 })
 
 		if j == 0 {
