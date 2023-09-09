@@ -32,15 +32,15 @@ func TestIntersection(t *testing.T) {
 				var x2, x3, x5 Set[E]
 
 				for i := 2; i < 100; i += 2 {
-					x2.Add(E(i))
+					x2.Add(One(E(i)))
 				}
 
 				for i := 3; i < 100; i += 3 {
-					x3.Add(E(i))
+					x3.Add(One(E(i)))
 				}
 
 				for i := 5; i < 100; i += 5 {
-					x5.Add(E(i))
+					x5.Add(One(E(i)))
 				}
 
 				return Intersection(x2, x3, x5)

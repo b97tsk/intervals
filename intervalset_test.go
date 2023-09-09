@@ -10,12 +10,8 @@ import (
 func TestAdd(t *testing.T) {
 	type E = elems.Int
 
-	addSingle := func(s Set[E], v E) Set[E] {
-		s.Add(v)
-		return s
-	}
-	addInterval := func(s Set[E], r Interval[E]) Set[E] {
-		s.AddRange(r.Unwrap())
+	add := func(s Set[E], r Interval[E]) Set[E] {
+		s.Add(r)
 		return s
 	}
 
@@ -23,35 +19,35 @@ func TestAdd(t *testing.T) {
 		Actual, Expected Set[E]
 	}{
 		{
-			addInterval(Set[E]{{1, 4}, {9, 12}}, Interval[E]{5, 8}),
+			add(Set[E]{{1, 4}, {9, 12}}, Range[E](5, 8)),
 			Set[E]{{1, 4}, {5, 8}, {9, 12}},
 		},
 		{
-			addSingle(Set[E]{{1, 4}, {9, 12}}, 6),
+			add(Set[E]{{1, 4}, {9, 12}}, One[E](6)),
 			Set[E]{{1, 4}, {6, 7}, {9, 12}},
 		},
 		{
-			addInterval(Set[E]{{1, 4}, {9, 12}}, Interval[E]{4, 8}),
+			add(Set[E]{{1, 4}, {9, 12}}, Range[E](4, 8)),
 			Set[E]{{1, 8}, {9, 12}},
 		},
 		{
-			addInterval(Set[E]{{1, 4}, {9, 12}}, Interval[E]{5, 9}),
+			add(Set[E]{{1, 4}, {9, 12}}, Range[E](5, 9)),
 			Set[E]{{1, 4}, {5, 12}},
 		},
 		{
-			addInterval(Set[E]{{1, 4}, {9, 12}}, Interval[E]{4, 9}),
+			add(Set[E]{{1, 4}, {9, 12}}, Range[E](4, 9)),
 			Set[E]{{1, 12}},
 		},
 		{
-			addSingle(Set[E]{{1, 4}, {9, 12}}, 10),
+			add(Set[E]{{1, 4}, {9, 12}}, One[E](10)),
 			Set[E]{{1, 4}, {9, 12}},
 		},
 		{
-			addInterval(Set[E]{{1, 4}, {9, 12}}, Interval[E]{9, 12}),
+			add(Set[E]{{1, 4}, {9, 12}}, Range[E](9, 12)),
 			Set[E]{{1, 4}, {9, 12}},
 		},
 		{
-			addInterval(Set[E]{{1, 4}, {9, 12}}, Interval[E]{12, 9}),
+			add(Set[E]{{1, 4}, {9, 12}}, Range[E](12, 9)),
 			Set[E]{{1, 4}, {9, 12}},
 		},
 	}
@@ -67,12 +63,8 @@ func TestAdd(t *testing.T) {
 func TestDelete(t *testing.T) {
 	type E = elems.Int
 
-	deleteSingle := func(s Set[E], v E) Set[E] {
-		s.Delete(v)
-		return s
-	}
-	deleteInterval := func(s Set[E], r Interval[E]) Set[E] {
-		s.DeleteRange(r.Unwrap())
+	del := func(s Set[E], r Interval[E]) Set[E] {
+		s.Delete(r)
 		return s
 	}
 
@@ -80,43 +72,43 @@ func TestDelete(t *testing.T) {
 		Actual, Expected Set[E]
 	}{
 		{
-			deleteInterval(Set[E]{{1, 4}, {7, 10}, {13, 16}}, Interval[E]{7, 10}),
+			del(Set[E]{{1, 4}, {7, 10}, {13, 16}}, Range[E](7, 10)),
 			Set[E]{{1, 4}, {13, 16}},
 		},
 		{
-			deleteInterval(Set[E]{{1, 4}, {7, 10}, {13, 16}}, Interval[E]{7, 9}),
+			del(Set[E]{{1, 4}, {7, 10}, {13, 16}}, Range[E](7, 9)),
 			Set[E]{{1, 4}, {9, 10}, {13, 16}},
 		},
 		{
-			deleteInterval(Set[E]{{1, 4}, {7, 10}, {13, 16}}, Interval[E]{8, 10}),
+			del(Set[E]{{1, 4}, {7, 10}, {13, 16}}, Range[E](8, 10)),
 			Set[E]{{1, 4}, {7, 8}, {13, 16}},
 		},
 		{
-			deleteSingle(Set[E]{{1, 4}, {7, 10}, {13, 16}}, 8),
+			del(Set[E]{{1, 4}, {7, 10}, {13, 16}}, One[E](8)),
 			Set[E]{{1, 4}, {7, 8}, {9, 10}, {13, 16}},
 		},
 		{
-			deleteInterval(Set[E]{{1, 4}, {7, 10}, {13, 16}}, Interval[E]{1, 16}),
+			del(Set[E]{{1, 4}, {7, 10}, {13, 16}}, Range[E](1, 16)),
 			Set[E]{},
 		},
 		{
-			deleteInterval(Set[E]{{1, 4}, {7, 10}, {13, 16}}, Interval[E]{1, 15}),
+			del(Set[E]{{1, 4}, {7, 10}, {13, 16}}, Range[E](1, 15)),
 			Set[E]{{15, 16}},
 		},
 		{
-			deleteInterval(Set[E]{{1, 4}, {7, 10}, {13, 16}}, Interval[E]{2, 16}),
+			del(Set[E]{{1, 4}, {7, 10}, {13, 16}}, Range[E](2, 16)),
 			Set[E]{{1, 2}},
 		},
 		{
-			deleteSingle(Set[E]{{1, 4}, {7, 10}, {13, 16}}, 5),
+			del(Set[E]{{1, 4}, {7, 10}, {13, 16}}, One[E](5)),
 			Set[E]{{1, 4}, {7, 10}, {13, 16}},
 		},
 		{
-			deleteInterval(Set[E]{{1, 4}, {7, 10}, {13, 16}}, Interval[E]{4, 7}),
+			del(Set[E]{{1, 4}, {7, 10}, {13, 16}}, Range[E](4, 7)),
 			Set[E]{{1, 4}, {7, 10}, {13, 16}},
 		},
 		{
-			deleteInterval(Set[E]{{1, 4}, {7, 10}, {13, 16}}, Interval[E]{7, 4}),
+			del(Set[E]{{1, 4}, {7, 10}, {13, 16}}, Range[E](7, 4)),
 			Set[E]{{1, 4}, {7, 10}, {13, 16}},
 		},
 	}
@@ -135,20 +127,20 @@ func TestContains(t *testing.T) {
 	s := Set[E]{{1, 3}, {5, 7}}
 
 	assertions := []bool{
-		s.Contains(0) == false,
-		s.Contains(1) == true,
-		s.Contains(2) == true,
-		s.Contains(3) == false,
-		s.Contains(4) == false,
-		s.Contains(5) == true,
-		s.Contains(6) == true,
-		s.Contains(7) == false,
-		s.ContainsRange(1, 3) == true,
-		s.ContainsRange(3, 5) == false,
-		s.ContainsRange(5, 7) == true,
-		s.ContainsRange(1, 7) == false,
-		s.ContainsRange(1, 1) == false,
-		s.ContainsRange(2, 2) == false,
+		s.ContainsOne(0) == false,
+		s.ContainsOne(1) == true,
+		s.ContainsOne(2) == true,
+		s.ContainsOne(3) == false,
+		s.ContainsOne(4) == false,
+		s.ContainsOne(5) == true,
+		s.ContainsOne(6) == true,
+		s.ContainsOne(7) == false,
+		s.Contains(Range[E](1, 3)) == true,
+		s.Contains(Range[E](3, 5)) == false,
+		s.Contains(Range[E](5, 7)) == true,
+		s.Contains(Range[E](1, 7)) == false,
+		s.Contains(Range[E](1, 1)) == false,
+		s.Contains(Range[E](2, 2)) == false,
 	}
 
 	for i, ok := range assertions {

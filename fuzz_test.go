@@ -10,12 +10,12 @@ import (
 	"github.com/b97tsk/intervals/elems"
 )
 
-func FuzzAddRange(f *testing.F) {
+func FuzzAdd(f *testing.F) {
 	fuzz(f, func(t *testing.T, x, y Set[elems.Uint8]) {
 		z := append(Set[elems.Uint8](nil), x...)
 
 		for _, r := range y {
-			z.AddRange(r.Unwrap())
+			z.Add(r)
 		}
 
 		if w := plainUnion(x, y); !z.Equal(w) {
@@ -28,12 +28,12 @@ func FuzzAddRange(f *testing.F) {
 	})
 }
 
-func FuzzDeleteRange(f *testing.F) {
+func FuzzDelete(f *testing.F) {
 	fuzz(f, func(t *testing.T, x, y Set[elems.Uint8]) {
 		z := append(Set[elems.Uint8](nil), x...)
 
 		for _, r := range y {
-			z.DeleteRange(r.Unwrap())
+			z.Delete(r)
 		}
 
 		if w := plainDifference(x, y); !z.Equal(w) {

@@ -6,6 +6,13 @@ import "sort"
 // Elem is the type set containing all supported element types.
 type Elem[E any] interface {
 	Compare(E) int
+}
+
+// An Enum is a computably enumerable Elem. There exists a computable
+// enumeration that lists all the elements in an increasing ordering
+// determined by the Compare method.
+type Enum[E any] interface {
+	Elem[E]
 	Next() E
 }
 
@@ -15,14 +22,23 @@ type Interval[E Elem[E]] struct {
 	High E // exclusive
 }
 
+// One returns an Interval that only contains a single element v.
+//
+// If v is the maximum value of E, One returns an invalid Interval.
+func One[E Enum[E]](v E) Interval[E] {
+	return Interval[E]{v, v.Next()}
+}
+
+// Range returns an Interval of range [lo, hi).
+//
+// If lo.Compare(hi) >= 0, Range returns an invalid Interval.
+func Range[E Elem[E]](lo, hi E) Interval[E] {
+	return Interval[E]{lo, hi}
+}
+
 // Equal reports whether r is identical to r2.
 func (r Interval[E]) Equal(r2 Interval[E]) bool {
 	return r.Low.Compare(r2.Low) == 0 && r.High.Compare(r2.High) == 0
-}
-
-// Unwrap returns r.Low, r.High.
-func (r Interval[E]) Unwrap() (E, E) {
-	return r.Low, r.High
 }
 
 // A Set is a slice of separate intervals sorted in ascending order.
@@ -32,9 +48,9 @@ func (r Interval[E]) Unwrap() (E, E) {
 // a Set.
 type Set[E Elem[E]] []Interval[E]
 
-// Add adds a single element into x.
-func (x *Set[E]) Add(v E) {
-	x.AddRange(v, v.Next())
+// Add adds range [r.Low, r.High) into x.
+func (x *Set[E]) Add(r Interval[E]) {
+	x.AddRange(r.Low, r.High)
 }
 
 // AddRange adds range [lo, hi) into x.
@@ -105,9 +121,9 @@ func (x *Set[E]) AddRange(lo, hi E) {
 	*x = s
 }
 
-// Delete removes a single element from x.
-func (x *Set[E]) Delete(v E) {
-	x.DeleteRange(v, v.Next())
+// Delete removes range [r.Low, r.High) from x.
+func (x *Set[E]) Delete(r Interval[E]) {
+	x.DeleteRange(r.Low, r.High)
 }
 
 // DeleteRange removes range [lo, hi) from x.
@@ -191,8 +207,13 @@ func (x *Set[E]) DeleteRange(lo, hi E) {
 	*x = s
 }
 
-// Contains reports whether x contains a single element.
-func (x Set[E]) Contains(v E) bool {
+// Contains reports whether x contains every element in range [r.Low, r.High).
+func (x Set[E]) Contains(r Interval[E]) bool {
+	return x.ContainsRange(r.Low, r.High)
+}
+
+// ContainsOne reports whether x contains a single element v.
+func (x Set[E]) ContainsOne(v E) bool {
 	i := sort.Search(len(x), func(i int) bool { return x[i].High.Compare(v) > 0 })
 	return i < len(x) && x[i].Low.Compare(v) <= 0
 }
@@ -235,7 +256,7 @@ func (x Set[E]) Extent() Interval[E] {
 // IsSubsetOf reports whether elements in x are all in y.
 func (x Set[E]) IsSubsetOf(y Set[E]) bool {
 	for i := range x {
-		if !y.ContainsRange(x[i].Unwrap()) {
+		if !y.Contains(x[i]) {
 			return false
 		}
 	}
