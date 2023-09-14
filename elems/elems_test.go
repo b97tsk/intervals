@@ -1,9 +1,7 @@
 package elems_test
 
 import (
-	"net/netip"
 	"testing"
-	"time"
 
 	"github.com/b97tsk/intervals/elems"
 )
@@ -22,10 +20,6 @@ func TestPackage(t *testing.T) {
 	t.Run("elems.Uint32", testInteger[elems.Uint32])
 	t.Run("elems.Uint64", testInteger[elems.Uint64])
 	t.Run("elems.Uintptr", testInteger[elems.Uintptr])
-	t.Run("elems.Duration", testInteger[elems.Duration])
-	t.Run("elems.Time", testTime)
-	t.Run("elems.IP(v4)", func(t *testing.T) { testIP(t, "127.0.0.1", "127.0.0.2", "127.0.0.3") })
-	t.Run("elems.IP(v6)", func(t *testing.T) { testIP(t, "::1", "::2", "::3") })
 }
 
 type Float interface {
@@ -69,32 +63,10 @@ func testInteger[E IntegerElem[E, U], U Integer](t *testing.T) {
 	assert(t, x.Next().Next().Unwrap() == 2, "Next twice didn't work.")
 }
 
-func testTime(t *testing.T) {
-	x := elems.Time(time.Unix(0, 0))
-
-	assert(t, x.Compare(x) == 0, "Compare didn't return 0.")
-	assert(t, x.Compare(x.Next()) == -1, "Compare didn't return -1.")
-	assert(t, x.Next().Compare(x) == +1, "Compare didn't return +1.")
-	assert(t, x.Next().Unwrap().Compare(time.Unix(0, 1)) == 0, "Next didn't work.")
-	assert(t, x.Next().Next().Unwrap().Compare(time.Unix(0, 2)) == 0, "Next twice didn't work.")
-}
-
-func testIP(t *testing.T, ip0, ip1, ip2 string) {
-	x := elems.IP(netip.MustParseAddr(ip0))
-
-	assert(t, x.Compare(x) == 0, "Compare didn't return 0.")
-	assert(t, x.Compare(x.Next()) == -1, "Compare didn't return -1.")
-	assert(t, x.Next().Compare(x) == +1, "Compare didn't return +1.")
-	assert(t, x.Next().Unwrap().Compare(netip.MustParseAddr(ip1)) == 0, "Next didn't work.")
-	assert(t, x.Next().Next().Unwrap().Compare(netip.MustParseAddr(ip2)) == 0, "Next twice didn't work.")
-}
-
 func assert(t *testing.T, ok bool, message string) {
 	t.Helper()
 
-	if ok {
-		return
+	if !ok {
+		t.Fatal(message)
 	}
-
-	t.Fatal(message)
 }
