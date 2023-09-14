@@ -1,7 +1,6 @@
 package elems_test
 
 import (
-	"math"
 	"net/netip"
 	"testing"
 	"time"
@@ -10,8 +9,8 @@ import (
 )
 
 func TestPackage(t *testing.T) {
-	t.Run("elems.Float32", func(t *testing.T) { testFloat[elems.Float32](t, math.SmallestNonzeroFloat32) })
-	t.Run("elems.Float64", func(t *testing.T) { testFloat[elems.Float64](t, math.SmallestNonzeroFloat64) })
+	t.Run("elems.Float32", testFloat[elems.Float32])
+	t.Run("elems.Float64", testFloat[elems.Float64])
 	t.Run("elems.Int", testInteger[elems.Int])
 	t.Run("elems.Int8", testInteger[elems.Int8])
 	t.Run("elems.Int16", testInteger[elems.Int16])
@@ -38,30 +37,26 @@ type Integer interface {
 		~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr
 }
 
-type Elem[E, U any] interface {
+type FloatElem[E, U any] interface {
+	Float
+	Compare(E) int
+	Unwrap() U
+}
+
+type IntegerElem[E, U any] interface {
+	Integer
 	Compare(E) int
 	Next() E
 	Unwrap() U
 }
 
-type FloatElem[E, U any] interface {
-	Float
-	Elem[E, U]
-}
-
-type IntegerElem[E, U any] interface {
-	Integer
-	Elem[E, U]
-}
-
-func testFloat[E FloatElem[E, U], U Float](t *testing.T, snz U) {
+func testFloat[E FloatElem[E, U], U Float](t *testing.T) {
 	var x E
 
 	assert(t, x.Compare(x) == 0, "Compare didn't return 0.")
-	assert(t, x.Compare(x.Next()) == -1, "Compare didn't return -1.")
-	assert(t, x.Next().Compare(x) == +1, "Compare didn't return +1.")
-	assert(t, x.Next().Unwrap() == snz, "Next didn't work.")
-	assert(t, x.Next().Next().Unwrap() == snz*2, "Next twice didn't work.")
+	assert(t, x.Compare(x+1) == -1, "Compare didn't return -1.")
+	assert(t, (x+1).Compare(x) == +1, "Compare didn't return +1.")
+	assert(t, x.Unwrap() == U(0), "Unwrap didn't work.")
 }
 
 func testInteger[E IntegerElem[E, U], U Integer](t *testing.T) {
