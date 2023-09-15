@@ -41,6 +41,17 @@ func (r Interval[E]) Equal(r2 Interval[E]) bool {
 	return r.Low.Compare(r2.Low) == 0 && r.High.Compare(r2.High) == 0
 }
 
+// Set returns the set of elements that are in r.
+//
+// If r is an invalid Interval, Set returns an empty set.
+func (r Interval[E]) Set() Set[E] {
+	if r.Low.Compare(r.High) >= 0 {
+		return nil
+	}
+
+	return Set[E]{r}
+}
+
 // A Set is a slice of separate intervals sorted in ascending order.
 // The zero value for a Set, i.e. a nil Set, is an empty set.
 //
