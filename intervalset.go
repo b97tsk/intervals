@@ -48,6 +48,38 @@ func (r Interval[E]) Equal(r2 Interval[E]) bool {
 // a Set.
 type Set[E Elem[E]] []Interval[E]
 
+// Collect returns the set of elements that are in any of rs.
+//
+// Collect performs better if Intervals in rs are Low-sorted in ascending order.
+func Collect[E Elem[E]](rs ...Interval[E]) Set[E] {
+	var s Set[E]
+
+	for _, r := range rs {
+		if len(s) == 0 {
+			if r.Low.Compare(r.High) < 0 {
+				s = append(s, r)
+			}
+
+			continue
+		}
+
+		switch r1 := &s[len(s)-1]; {
+		case r1.High.Compare(r.Low) < 0:
+			if r.Low.Compare(r.High) < 0 {
+				s = append(s, r)
+			}
+		case r1.Low.Compare(r.Low) <= 0:
+			if r1.High.Compare(r.High) < 0 {
+				r1.High = r.High
+			}
+		default:
+			s.Add(r)
+		}
+	}
+
+	return s
+}
+
 // Add adds range [r.Low, r.High) into x.
 func (x *Set[E]) Add(r Interval[E]) {
 	x.AddRange(r.Low, r.High)

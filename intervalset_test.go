@@ -7,6 +7,42 @@ import (
 	"github.com/b97tsk/intervals/elems"
 )
 
+func TestCollect(t *testing.T) {
+	type E = elems.Int
+
+	testCases := []struct {
+		Actual, Expected Set[E]
+	}{
+		{
+			Collect(Range[E](1, 5), Range[E](7, 11), Range[E](13, 17)),
+			Set[E]{{1, 5}, {7, 11}, {13, 17}},
+		},
+		{
+			Collect(Range[E](13, 17), Range[E](7, 11), Range[E](1, 5)),
+			Set[E]{{1, 5}, {7, 11}, {13, 17}},
+		},
+		{
+			Collect(Range[E](1, 7), Range[E](5, 13), Range[E](11, 17)),
+			Set[E]{{1, 17}},
+		},
+		{
+			Collect[E](),
+			nil,
+		},
+		{
+			Collect(Range[E](5, 1), Range[E](3, 7), Range[E](11, 9), Range[E](5, 1)),
+			Set[E]{{3, 7}},
+		},
+	}
+
+	for i, c := range testCases {
+		if !c.Actual.Equal(c.Expected) {
+			t.Fail()
+			t.Logf("Case %v: want %v, but got %v", i, c.Expected, c.Actual)
+		}
+	}
+}
+
 func TestAdd(t *testing.T) {
 	type E = elems.Int
 
