@@ -55,7 +55,7 @@ func (r Interval[E]) Set() Set[E] {
 // A Set is a slice of separate intervals sorted in ascending order.
 // The zero value for a Set, i.e. a nil Set, is an empty set.
 //
-// Since Interval is half-open, you can never add the maximum value of E into
+// Since Intervals are half-open, the maximum value of E cannot be added into
 // a Set.
 type Set[E Elem[E]] []Interval[E]
 
