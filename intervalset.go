@@ -101,7 +101,7 @@ func (x *Set[E]) AddRange(lo, hi E) {
 	s := *x
 
 	i := sort.Search(len(s), func(i int) bool { return s[i].Low.Compare(lo) > 0 })
-	j := sort.Search(len(s), func(i int) bool { return s[i].High.Compare(hi) > 0 })
+	// j := sort.Search(len(s), func(i int) bool { return s[i].High.Compare(hi) > 0 })
 
 	// ┌────────┬─────────────────────────────────────────┐
 	// │        │    j-1        j        i-1        i     │
@@ -127,6 +127,11 @@ func (x *Set[E]) AddRange(lo, hi E) {
 	// │ Case 5 │  |-----|   |-----| ~ |-----|   |-----|  │
 	// │        │  |<- lo  ->|               |<- hi  ->|  │
 	// └────────┴─────────────────────────────────────────┘
+
+	// Optimized: j >= i-1.
+	off := max(0, i-1)
+	t := s[off:]
+	j := off + sort.Search(len(t), func(i int) bool { return t[i].High.Compare(hi) > 0 })
 
 	if i > j { // Case 1 and 2.
 		return
@@ -201,7 +206,7 @@ func (x *Set[E]) DeleteRange(lo, hi E) {
 	// │        │        |<- lo  ->|   |<- hi  ->|        │
 	// └────────┴─────────────────────────────────────────┘
 
-	// Optimized, j >= i.
+	// Optimized: j >= i.
 	t := s[i:]
 	j := i + sort.Search(len(t), func(i int) bool { return t[i].Low.Compare(hi) > 0 })
 
