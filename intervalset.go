@@ -9,8 +9,8 @@ type Elem[E any] interface {
 }
 
 // An Enum is a computably enumerable Elem. There exists a computable
-// enumeration that lists all the elements in an increasing ordering
-// determined by the Compare method.
+// enumeration that lists elements, in a valid Interval of Enum, in an
+// increasing ordering determined by the Compare method.
 type Enum[E any] interface {
 	Elem[E]
 	Next() E
