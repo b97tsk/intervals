@@ -35,7 +35,7 @@ func union[E Elem[E]](x, y, out Set[E]) Set[E] {
 		z = append(z, x[:i]...)
 		x = x[i:]
 
-		if len(x) > 0 && x[0].Low.Compare(r.Low) < 0 {
+		if len(x) != 0 && x[0].Low.Compare(r.Low) < 0 {
 			r.Low = x[0].Low
 		}
 
@@ -43,7 +43,7 @@ func union[E Elem[E]](x, y, out Set[E]) Set[E] {
 		j := sort.Search(len(x), func(i int) bool { return x[i].High.Compare(r.High) > 0 })
 		x = x[j:]
 
-		if len(x) > 0 && x[0].Low.Compare(r.High) <= 0 {
+		if len(x) != 0 && x[0].Low.Compare(r.High) <= 0 {
 			r.High = x[0].High
 			x, y = y, x[1:]
 
