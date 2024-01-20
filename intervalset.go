@@ -300,14 +300,3 @@ func (x Set[E]) Extent() Interval[E] {
 		High: x[len(x)-1].High,
 	}
 }
-
-// IsSubsetOf reports whether elements in x are all in y.
-func (x Set[E]) IsSubsetOf(y Set[E]) bool {
-	for i := range x {
-		if !y.Contains(x[i]) {
-			return false
-		}
-	}
-
-	return true
-}

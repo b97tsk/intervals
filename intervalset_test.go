@@ -234,20 +234,3 @@ func TestExtent(t *testing.T) {
 		}
 	}
 }
-
-func TestIsSubsetOf(t *testing.T) {
-	type E = elems.Int
-
-	assertions := []bool{
-		Set[E]{}.IsSubsetOf(Set[E]{}) == true,
-		Set[E]{{3, 9}}.IsSubsetOf(Set[E]{{1, 11}}) == true,
-		Set[E]{{3, 9}}.IsSubsetOf(Set[E]{{1, 5}, {7, 11}}) == false,
-	}
-
-	for i, ok := range assertions {
-		if !ok {
-			t.Fail()
-			t.Logf("Case %v: FAILED", i)
-		}
-	}
-}
