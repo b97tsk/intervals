@@ -46,6 +46,27 @@ func FuzzDelete(f *testing.F) {
 	})
 }
 
+func FuzzContains(f *testing.F) {
+	fuzz(f, func(t *testing.T, x, y Set[elems.Uint8]) {
+		yes := true
+
+		for _, r := range x {
+			if !y.Contains(r) {
+				yes = false
+				break
+			}
+		}
+
+		if yes != plainIsSubsetOf(x, y) {
+			t.Logf("x = %v", x)
+			t.Logf("y = %v", y)
+			t.Logf("x is subset of y = %v", !yes)
+			t.Logf("x is subset of y = %v (actual)", yes)
+			t.Fail()
+		}
+	})
+}
+
 func FuzzIsSubsetOf(f *testing.F) {
 	fuzz(f, func(t *testing.T, x, y Set[elems.Uint8]) {
 		if yes := x.IsSubsetOf(y); yes != plainIsSubsetOf(x, y) {
