@@ -59,36 +59,45 @@ func (r Interval[E]) Set() Set[E] {
 // a Set.
 type Set[E Elem[E]] []Interval[E]
 
-// Collect returns the set of elements that are in any of rs.
+// Collect returns the set of elements that are in any of s.
 //
-// Collect performs better if Intervals in rs are Low-sorted in ascending order.
-func Collect[E Elem[E]](rs ...Interval[E]) Set[E] {
-	var s Set[E]
+// Collect performs better if s are sorted in ascending order by the Low field.
+func Collect[E Elem[E]](s ...Interval[E]) Set[E] {
+	return CollectInto(nil, s...)
+}
 
-	for _, r := range rs {
-		if len(s) == 0 {
+// CollectInto returns the set of elements that are in any of s, overwriting x.
+// x and s can be the same slice. x must not be used after.
+//
+// CollectInto performs better if s are sorted in ascending order by the Low
+// field.
+func CollectInto[E Elem[E]](x Set[E], s ...Interval[E]) Set[E] {
+	x = x[:0]
+
+	for _, r := range s {
+		if len(x) == 0 {
 			if r.Low.Compare(r.High) < 0 {
-				s = append(s, r)
+				x = append(x, r)
 			}
 
 			continue
 		}
 
-		switch r1 := &s[len(s)-1]; {
+		switch r1 := &x[len(x)-1]; {
 		case r1.High.Compare(r.Low) < 0:
 			if r.Low.Compare(r.High) < 0 {
-				s = append(s, r)
+				x = append(x, r)
 			}
 		case r1.Low.Compare(r.Low) <= 0:
 			if r1.High.Compare(r.High) < 0 {
 				r1.High = r.High
 			}
 		default:
-			s.Add(r)
+			x.Add(r)
 		}
 	}
 
-	return s
+	return x
 }
 
 // Add adds range [r.Low, r.High) into x.
