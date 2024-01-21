@@ -1,7 +1,10 @@
 // Package intervals is a library for manipulating sets of intervals.
 package intervals
 
-import "sort"
+import (
+	"slices"
+	"sort"
+)
 
 // Elem is the type set containing all supported element types.
 type Elem[E any] interface {
@@ -162,19 +165,13 @@ func (x *Set[E]) AddRange(lo, hi E) {
 		}
 	}
 
-	if i == j { // Case 3 (where lo and hi overlap with each other).
-		if lo.Compare(hi) < 0 {
-			s = append(s, Interval[E]{})
-			copy(s[i+1:], s[i:])
-			s[i] = Interval[E]{lo, hi}
-			*x = s
+	if i == j { // Case 3 (where lo and hi overlap).
+		if lo.Compare(hi) >= 0 { // Get rid of the devil first.
+			return
 		}
-
-		return
 	}
 
-	s[i] = Interval[E]{lo, hi}
-	s = append(s[:i+1], s[j:]...)
+	s = slices.Replace(s, i, j, Range(lo, hi))
 	*x = s
 }
 
@@ -224,43 +221,24 @@ func (x *Set[E]) DeleteRange(lo, hi E) {
 	}
 
 	if i == j-1 { // Case 4.
-		if r := &s[i]; r.Low.Compare(lo) < 0 {
-			if r.High.Compare(hi) > 0 {
-				if lo.Compare(hi) < 0 {
-					s = append(s, Interval[E]{})
-					copy(s[j:], s[i:])
-					s[i].High = lo
-					s[j].Low = hi
-					*x = s
-				}
-			} else {
-				r.High = lo
-			}
-		} else {
-			if r.High.Compare(hi) > 0 {
-				r.Low = hi
-			} else {
-				s = append(s[:i], s[j:]...)
-				*x = s
-			}
+		if lo.Compare(hi) >= 0 { // Get rid of the devil first.
+			return
 		}
-
-		return
 	}
 
-	// Case 5.
+	// Case 4 and 5.
+
+	v := make([]Interval[E], 0, 2)
 
 	if r := &s[i]; r.Low.Compare(lo) < 0 {
-		r.High = lo
-		i++
+		v = append(v, Range(r.Low, lo))
 	}
 
 	if r := &s[j-1]; r.High.Compare(hi) > 0 {
-		r.Low = hi
-		j--
+		v = append(v, Range(hi, r.High))
 	}
 
-	s = append(s[:i], s[j:]...)
+	s = slices.Replace(s, i, j, v...)
 	*x = s
 }
 
