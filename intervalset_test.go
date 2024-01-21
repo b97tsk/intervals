@@ -200,7 +200,7 @@ func TestExtent(t *testing.T) {
 	}{
 		{
 			Set[E]{{1, 3}, {5, 7}}.Extent(),
-			Interval[E]{1, 7},
+			Range[E](1, 7),
 		},
 		{
 			Set[E]{}.Extent(),

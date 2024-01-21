@@ -62,17 +62,17 @@ func difference[E Elem[E]](x, y, out Set[E]) Set[E] {
 		switch lo := x[0].Low; lo.Compare(r.Low) {
 		case -1:
 			if !inv {
-				z = append(z, Interval[E]{lo, r.Low})
+				z = append(z, Range(lo, r.Low))
 			}
 		case +1:
 			if inv {
-				z = append(z, Interval[E]{r.Low, lo})
+				z = append(z, Range(r.Low, lo))
 			}
 		}
 
 		if inv {
 			for i := 0; i < j-1; i++ {
-				z = append(z, Interval[E]{x[i].High, x[i+1].Low})
+				z = append(z, Range(x[i].High, x[i+1].Low))
 			}
 		}
 
@@ -82,7 +82,7 @@ func difference[E Elem[E]](x, y, out Set[E]) Set[E] {
 		switch hi.Compare(r.High) {
 		case -1:
 			if inv {
-				z = append(z, Interval[E]{hi, r.High})
+				z = append(z, Range(hi, r.High))
 			}
 		case +1:
 			r.Low, r.High = r.High, hi

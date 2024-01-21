@@ -29,7 +29,7 @@ type Interval[E Elem[E]] struct {
 //
 // If v is the maximum value of E, One returns an invalid Interval.
 func One[E Enum[E]](v E) Interval[E] {
-	return Interval[E]{v, v.Next()}
+	return Range(v, v.Next())
 }
 
 // Range returns an Interval of range [lo, hi).
@@ -282,8 +282,5 @@ func (x Set[E]) Extent() Interval[E] {
 		return Interval[E]{}
 	}
 
-	return Interval[E]{
-		Low:  x[0].Low,
-		High: x[len(x)-1].High,
-	}
+	return Range(x[0].Low, x[len(x)-1].High)
 }

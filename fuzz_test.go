@@ -211,7 +211,7 @@ func plainIntersection(x, y Set[elems.Uint8]) Set[elems.Uint8] {
 			}
 		} else {
 			if lo >= 0 {
-				z = append(z, Interval[elems.Uint8]{elems.Uint8(lo), elems.Uint8(i)})
+				z = append(z, Range(elems.Uint8(lo), elems.Uint8(i)))
 				lo = -1
 			}
 		}
@@ -242,7 +242,7 @@ func plainUnion(x, y Set[elems.Uint8]) Set[elems.Uint8] {
 			}
 		} else {
 			if lo >= 0 {
-				z = append(z, Interval[elems.Uint8]{elems.Uint8(lo), elems.Uint8(i)})
+				z = append(z, Range(elems.Uint8(lo), elems.Uint8(i)))
 				lo = -1
 			}
 		}
@@ -273,7 +273,7 @@ func plainDifference(x, y Set[elems.Uint8]) Set[elems.Uint8] {
 			}
 		} else {
 			if lo >= 0 {
-				z = append(z, Interval[elems.Uint8]{elems.Uint8(lo), elems.Uint8(i)})
+				z = append(z, Range(elems.Uint8(lo), elems.Uint8(i)))
 				lo = -1
 			}
 		}
@@ -304,7 +304,7 @@ func plainSymmetricDifference(x, y Set[elems.Uint8]) Set[elems.Uint8] {
 			}
 		} else {
 			if lo >= 0 {
-				z = append(z, Interval[elems.Uint8]{elems.Uint8(lo), elems.Uint8(i)})
+				z = append(z, Range(elems.Uint8(lo), elems.Uint8(i)))
 				lo = -1
 			}
 		}
