@@ -46,10 +46,12 @@ func symmetricDifference[E Elem[E]](x, y, out Set[E]) Set[E] {
 			continue
 		}
 
-		switch lo := x[0].Low; lo.Compare(r.Low) {
-		case -1:
+		lo := x[0].Low
+
+		switch c := lo.Compare(r.Low); {
+		case c < 0:
 			z = appendInterval(z, Range(lo, r.Low))
-		case +1:
+		case c > 0:
 			z = appendInterval(z, Range(r.Low, lo))
 		}
 
@@ -60,10 +62,10 @@ func symmetricDifference[E Elem[E]](x, y, out Set[E]) Set[E] {
 		hi := x[j-1].High
 		x = x[j:]
 
-		switch hi.Compare(r.High) {
-		case -1:
+		switch c := hi.Compare(r.High); {
+		case c < 0:
 			z = append(z, Range(hi, r.High))
-		case +1:
+		case c > 0:
 			r.Low, r.High = r.High, hi
 			x, y = y, x
 
