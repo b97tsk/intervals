@@ -126,9 +126,9 @@ func FuzzSymmetricDifference(f *testing.F) {
 	})
 }
 
-func fuzz(f *testing.F, ff func(t *testing.T, x, y Set[elems.Uint8])) {
-	data := make([]byte, 32)
-	args := make([]any, len(data))
+func addRandomSeed(f *testing.F, n int) {
+	data := make([]byte, n)
+	args := make([]any, n)
 
 	for i := 0; i < 10; i++ {
 		if _, err := rand.Read(data); err != nil {
@@ -141,6 +141,10 @@ func fuzz(f *testing.F, ff func(t *testing.T, x, y Set[elems.Uint8])) {
 
 		f.Add(args...)
 	}
+}
+
+func fuzz(f *testing.F, ff func(t *testing.T, x, y Set[elems.Uint8])) {
+	addRandomSeed(f, 32)
 
 	f.Fuzz(func(
 		t *testing.T,
@@ -168,6 +172,56 @@ func fuzz(f *testing.F, ff func(t *testing.T, x, y Set[elems.Uint8])) {
 		}
 
 		ff(t, plainUnion(x), plainUnion(y))
+	})
+}
+
+func FuzzCollect(f *testing.F) {
+	addRandomSeed(f, 16)
+
+	f.Fuzz(func(
+		t *testing.T,
+		x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15 byte,
+	) {
+		xs := []byte{x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15}
+
+		var x []Interval[elems.Uint8]
+
+		for i, j := 0, len(xs); i < j; i += 2 {
+			x = append(x, Range(elems.Uint8(xs[i]), elems.Uint8(xs[i+1])))
+		}
+
+		if w, z := plainUnion(x), Collect(x...); !z.Equal(w) {
+			t.Logf("x = %v", x)
+			t.Logf("collect(x...) = %v", w)
+			t.Logf("collect(x...) = %v (actual)", z)
+			t.Fail()
+		}
+	})
+}
+
+func FuzzCollectInto(f *testing.F) {
+	addRandomSeed(f, 16)
+
+	f.Fuzz(func(
+		t *testing.T,
+		x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15 byte,
+	) {
+		xs := []byte{x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15}
+
+		var x []Interval[elems.Uint8]
+
+		for i, j := 0, len(xs); i < j; i += 2 {
+			x = append(x, Range(elems.Uint8(xs[i]), elems.Uint8(xs[i+1])))
+		}
+
+		y := slices.Clone(x)
+
+		if w, z := plainUnion(x), CollectInto(y, y...); !z.Equal(w) {
+			t.Logf("x = %v", x)
+			t.Logf("collect(x...) = %v", w)
+			t.Logf("collect(x...) into(y) = %v (actual)", z)
+			t.Fail()
+		}
 	})
 }
 
