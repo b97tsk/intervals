@@ -68,15 +68,15 @@ func TestSymmetricDifference(t *testing.T) {
 				var x2, x3, x5 Set[E]
 
 				for i := 2; i < 32; i += 2 {
-					x2.Add(One(E(i)))
+					x2 = Add(x2, One(E(i)))
 				}
 
 				for i := 3; i < 32; i += 3 {
-					x3.Add(One(E(i)))
+					x3 = Add(x3, One(E(i)))
 				}
 
 				for i := 5; i < 32; i += 5 {
-					x5.Add(One(E(i)))
+					x5 = Add(x5, One(E(i)))
 				}
 
 				return SymmetricDifference(x2, x3, x5)

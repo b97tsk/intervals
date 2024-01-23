@@ -14,7 +14,7 @@ func FuzzAdd(f *testing.F) {
 		z := append(Set[elems.Uint8](nil), x...)
 
 		for _, r := range y {
-			z.Add(r)
+			z = Add(z, r)
 		}
 
 		if w := plainUnion(x, y); !z.Equal(w) {
@@ -32,7 +32,7 @@ func FuzzDelete(f *testing.F) {
 		z := append(Set[elems.Uint8](nil), x...)
 
 		for _, r := range y {
-			z.Delete(r)
+			z = Delete(z, r)
 		}
 
 		if w := plainDifference(x, y); !z.Equal(w) {

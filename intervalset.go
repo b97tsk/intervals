@@ -96,24 +96,22 @@ func CollectInto[E Elem[E]](x Set[E], s ...Interval[E]) Set[E] {
 				r1.High = r.High
 			}
 		default:
-			x.Add(r)
+			x = Add(x, r)
 		}
 	}
 
 	return x
 }
 
-// Add adds range [r.Low, r.High) into x.
-func (x *Set[E]) Add(r Interval[E]) {
-	x.AddRange(r.Low, r.High)
+// Add adds range [r.Low, r.High) into x, returning the modified Set.
+func Add[E Elem[E]](x Set[E], r Interval[E]) Set[E] {
+	return AddRange(x, r.Low, r.High)
 }
 
-// AddRange adds range [lo, hi) into x.
-func (x *Set[E]) AddRange(lo, hi E) {
-	s := *x
-
-	i := sort.Search(len(s), func(i int) bool { return s[i].Low.Compare(lo) > 0 })
-	// j := sort.Search(len(s), func(i int) bool { return s[i].High.Compare(hi) > 0 })
+// AddRange adds range [lo, hi) into x, returning the modified Set.
+func AddRange[E Elem[E]](x Set[E], lo, hi E) Set[E] {
+	i := sort.Search(len(x), func(i int) bool { return x[i].Low.Compare(lo) > 0 })
+	// j := sort.Search(len(x), func(i int) bool { return x[i].High.Compare(hi) > 0 })
 
 	// ┌────────┬─────────────────────────────────────────┐
 	// │        │    j-1        j        i-1        i     │
@@ -142,24 +140,24 @@ func (x *Set[E]) AddRange(lo, hi E) {
 
 	// Optimized: j >= i-1.
 	off := max(0, i-1)
-	t := s[off:]
-	j := off + sort.Search(len(t), func(i int) bool { return t[i].High.Compare(hi) > 0 })
+	z := x[off:]
+	j := off + sort.Search(len(z), func(i int) bool { return z[i].High.Compare(hi) > 0 })
 
 	if i > j { // Case 1 and 2.
-		return
+		return x
 	}
 
 	// Case 3, 4 and 5.
 
 	if i > 0 {
-		if r := &s[i-1]; r.High.Compare(lo) >= 0 {
+		if r := &x[i-1]; r.High.Compare(lo) >= 0 {
 			lo = r.Low
 			i--
 		}
 	}
 
-	if j < len(s) {
-		if r := &s[j]; r.Low.Compare(hi) <= 0 {
+	if j < len(x) {
+		if r := &x[j]; r.Low.Compare(hi) <= 0 {
 			hi = r.High
 			j++
 		}
@@ -167,25 +165,22 @@ func (x *Set[E]) AddRange(lo, hi E) {
 
 	if i == j { // Case 3 (where lo and hi overlap).
 		if lo.Compare(hi) >= 0 { // Get rid of the devil first.
-			return
+			return x
 		}
 	}
 
-	s = slices.Replace(s, i, j, Range(lo, hi))
-	*x = s
+	return slices.Replace(x, i, j, Range(lo, hi))
 }
 
-// Delete removes range [r.Low, r.High) from x.
-func (x *Set[E]) Delete(r Interval[E]) {
-	x.DeleteRange(r.Low, r.High)
+// Delete removes range [r.Low, r.High) from x, returning the modified Set.
+func Delete[E Elem[E]](x Set[E], r Interval[E]) Set[E] {
+	return DeleteRange(x, r.Low, r.High)
 }
 
-// DeleteRange removes range [lo, hi) from x.
-func (x *Set[E]) DeleteRange(lo, hi E) {
-	s := *x
-
-	i := sort.Search(len(s), func(i int) bool { return s[i].High.Compare(lo) > 0 })
-	// j := sort.Search(len(s), func(i int) bool { return s[i].Low.Compare(hi) > 0 })
+// DeleteRange removes range [lo, hi) from x, returning the modified Set.
+func DeleteRange[E Elem[E]](x Set[E], lo, hi E) Set[E] {
+	i := sort.Search(len(x), func(i int) bool { return x[i].High.Compare(lo) > 0 })
+	// j := sort.Search(len(x), func(i int) bool { return x[i].Low.Compare(hi) > 0 })
 
 	// ┌────────┬─────────────────────────────────────────┐
 	// │        │    j-1        j        i-1        i     │
@@ -213,16 +208,16 @@ func (x *Set[E]) DeleteRange(lo, hi E) {
 	// └────────┴─────────────────────────────────────────┘
 
 	// Optimized: j >= i.
-	t := s[i:]
-	j := i + sort.Search(len(t), func(i int) bool { return t[i].Low.Compare(hi) > 0 })
+	z := x[i:]
+	j := i + sort.Search(len(z), func(i int) bool { return z[i].Low.Compare(hi) > 0 })
 
 	if i == j { // Case 1, 2 and 3.
-		return
+		return x
 	}
 
 	if i == j-1 { // Case 4.
 		if lo.Compare(hi) >= 0 { // Get rid of the devil first.
-			return
+			return x
 		}
 	}
 
@@ -230,16 +225,15 @@ func (x *Set[E]) DeleteRange(lo, hi E) {
 
 	v := make([]Interval[E], 0, 2)
 
-	if r := &s[i]; r.Low.Compare(lo) < 0 {
+	if r := &x[i]; r.Low.Compare(lo) < 0 {
 		v = append(v, Range(r.Low, lo))
 	}
 
-	if r := &s[j-1]; r.High.Compare(hi) > 0 {
+	if r := &x[j-1]; r.High.Compare(hi) > 0 {
 		v = append(v, Range(hi, r.High))
 	}
 
-	s = slices.Replace(s, i, j, v...)
-	*x = s
+	return slices.Replace(x, i, j, v...)
 }
 
 // Contains reports whether x contains every element in range [r.Low, r.High).

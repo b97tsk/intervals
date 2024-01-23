@@ -58,36 +58,31 @@ func TestCreation(t *testing.T) {
 func TestAdd(t *testing.T) {
 	type E = elems.Int
 
-	add := func(s Set[E], r Interval[E]) Set[E] {
-		s.Add(r)
-		return s
-	}
-
 	testCases := []struct {
 		Actual, Expected Set[E]
 	}{
 		{
-			add(Set[E]{{1, 5}, {11, 15}}, Range[E](5, 11)),
+			Add(Set[E]{{1, 5}, {11, 15}}, Range[E](5, 11)),
 			Set[E]{{1, 15}},
 		},
 		{
-			add(Set[E]{{1, 5}, {11, 15}}, Range[E](5, 9)),
+			Add(Set[E]{{1, 5}, {11, 15}}, Range[E](5, 9)),
 			Set[E]{{1, 9}, {11, 15}},
 		},
 		{
-			add(Set[E]{{1, 5}, {11, 15}}, Range[E](7, 11)),
+			Add(Set[E]{{1, 5}, {11, 15}}, Range[E](7, 11)),
 			Set[E]{{1, 5}, {7, 15}},
 		},
 		{
-			add(Set[E]{{1, 5}, {11, 15}}, Range[E](7, 9)),
+			Add(Set[E]{{1, 5}, {11, 15}}, Range[E](7, 9)),
 			Set[E]{{1, 5}, {7, 9}, {11, 15}},
 		},
 		{
-			add(Set[E]{{1, 5}, {11, 15}}, Range[E](9, 7)),
+			Add(Set[E]{{1, 5}, {11, 15}}, Range[E](9, 7)),
 			Set[E]{{1, 5}, {11, 15}},
 		},
 		{
-			add(Set[E]{{1, 5}, {11, 15}}, Range[E](15, 11)),
+			Add(Set[E]{{1, 5}, {11, 15}}, Range[E](15, 11)),
 			Set[E]{{1, 5}, {11, 15}},
 		},
 	}
@@ -103,36 +98,31 @@ func TestAdd(t *testing.T) {
 func TestDelete(t *testing.T) {
 	type E = elems.Int
 
-	del := func(s Set[E], r Interval[E]) Set[E] {
-		s.Delete(r)
-		return s
-	}
-
 	testCases := []struct {
 		Actual, Expected Set[E]
 	}{
 		{
-			del(Set[E]{{1, 3}, {5, 11}, {13, 15}}, Range[E](5, 11)),
+			Delete(Set[E]{{1, 3}, {5, 11}, {13, 15}}, Range[E](5, 11)),
 			Set[E]{{1, 3}, {13, 15}},
 		},
 		{
-			del(Set[E]{{1, 3}, {5, 11}, {13, 15}}, Range[E](5, 9)),
+			Delete(Set[E]{{1, 3}, {5, 11}, {13, 15}}, Range[E](5, 9)),
 			Set[E]{{1, 3}, {9, 11}, {13, 15}},
 		},
 		{
-			del(Set[E]{{1, 3}, {5, 11}, {13, 15}}, Range[E](7, 11)),
+			Delete(Set[E]{{1, 3}, {5, 11}, {13, 15}}, Range[E](7, 11)),
 			Set[E]{{1, 3}, {5, 7}, {13, 15}},
 		},
 		{
-			del(Set[E]{{1, 3}, {5, 11}, {13, 15}}, Range[E](7, 9)),
+			Delete(Set[E]{{1, 3}, {5, 11}, {13, 15}}, Range[E](7, 9)),
 			Set[E]{{1, 3}, {5, 7}, {9, 11}, {13, 15}},
 		},
 		{
-			del(Set[E]{{1, 3}, {5, 11}, {13, 15}}, Range[E](9, 7)),
+			Delete(Set[E]{{1, 3}, {5, 11}, {13, 15}}, Range[E](9, 7)),
 			Set[E]{{1, 3}, {5, 11}, {13, 15}},
 		},
 		{
-			del(Set[E]{{1, 3}, {5, 11}, {13, 15}}, Range[E](5, 3)),
+			Delete(Set[E]{{1, 3}, {5, 11}, {13, 15}}, Range[E](5, 3)),
 			Set[E]{{1, 3}, {5, 11}, {13, 15}},
 		},
 	}
