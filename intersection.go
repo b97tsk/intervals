@@ -4,16 +4,18 @@ import "sort"
 
 // Intersection returns the set of elements that are in both x and y.
 func (x Set[E]) Intersection(y Set[E]) Set[E] {
-	return intersection(x, y, nil)
+	return intersectionInto(nil, x, y)
 }
 
 // Intersection returns the set of elements that are in each of sets.
 func Intersection[E Elem[E]](sets ...Set[E]) Set[E] {
-	return combine(intersection, sets...)
+	return combine(intersectionInto, sets...)
 }
 
-func intersection[E Elem[E]](x, y, out Set[E]) Set[E] {
-	z := out[:0]
+// intersectionInto returns the set of elements that are in both x and y,
+// overwriting z. z must not be x or y; z must not be used after.
+func intersectionInto[E Elem[E]](z, x, y Set[E]) Set[E] {
+	z = z[:0]
 
 	for {
 		if len(x) < len(y) {

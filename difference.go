@@ -4,17 +4,19 @@ import "sort"
 
 // Difference returns the set of elements that are in x, but not in y.
 func (x Set[E]) Difference(y Set[E]) Set[E] {
-	return difference(x, y, nil)
+	return differenceInto(nil, x, y)
 }
 
 // Difference returns the set of elements that are in sets[0], but not in
 // any of sets[1:]. If sets is empty, Difference returns an empty set.
 func Difference[E Elem[E]](sets ...Set[E]) Set[E] {
-	return combine(difference, sets...)
+	return combine(differenceInto, sets...)
 }
 
-func difference[E Elem[E]](x, y, out Set[E]) Set[E] {
-	z := out[:0]
+// differenceInto returns the set of elements that are in x, but not in y,
+// overwriting z. z must not be x or y; z must not be used after.
+func differenceInto[E Elem[E]](z, x, y Set[E]) Set[E] {
+	z = z[:0]
 
 	inv := false
 

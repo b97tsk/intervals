@@ -5,17 +5,20 @@ import "sort"
 // SymmetricDifference returns the set of elements that are in one of x and y,
 // but not in both.
 func (x Set[E]) SymmetricDifference(y Set[E]) Set[E] {
-	return symmetricDifference(x, y, nil)
+	return symmetricDifferenceInto(nil, x, y)
 }
 
 // SymmetricDifference returns the set of elements that are in an odd number
 // of sets.
 func SymmetricDifference[E Elem[E]](sets ...Set[E]) Set[E] {
-	return combine(symmetricDifference, sets...)
+	return combine(symmetricDifferenceInto, sets...)
 }
 
-func symmetricDifference[E Elem[E]](x, y, out Set[E]) Set[E] {
-	z := out[:0]
+// symmetricDifferenceInto returns the set of elements that are in one of x and
+// y, but not in both, overwriting z. z must not be x or y; z must not be used
+// after.
+func symmetricDifferenceInto[E Elem[E]](z, x, y Set[E]) Set[E] {
+	z = z[:0]
 
 	for {
 		if len(x) < len(y) {
