@@ -96,16 +96,20 @@ func CollectInto[E Elem[E]](x Set[E], s ...Interval[E]) Set[E] {
 				r1.High = r.High
 			}
 		default:
-			x = Add(x, r)
+			x = addRange(x, r.Low, r.High)
 		}
 	}
 
 	return x
 }
 
-// Add adds range [r.Low, r.High) into x, returning the modified Set.
-func Add[E Elem[E]](x Set[E], r Interval[E]) Set[E] {
-	return addRange(x, r.Low, r.High)
+// Add adds zero or more Intervals into x, returning the modified Set.
+func Add[E Elem[E]](x Set[E], s ...Interval[E]) Set[E] {
+	for _, r := range s {
+		x = addRange(x, r.Low, r.High)
+	}
+
+	return x
 }
 
 // addRange adds range [lo, hi) into x, returning the modified Set.
@@ -172,9 +176,13 @@ func addRange[E Elem[E]](x Set[E], lo, hi E) Set[E] {
 	return slices.Replace(x, i, j, Range(lo, hi))
 }
 
-// Delete removes range [r.Low, r.High) from x, returning the modified Set.
-func Delete[E Elem[E]](x Set[E], r Interval[E]) Set[E] {
-	return deleteRange(x, r.Low, r.High)
+// Delete removes zero or more Intervals from x, returning the modified Set.
+func Delete[E Elem[E]](x Set[E], s ...Interval[E]) Set[E] {
+	for _, r := range s {
+		x = deleteRange(x, r.Low, r.High)
+	}
+
+	return x
 }
 
 // deleteRange removes range [lo, hi) from x, returning the modified Set.
