@@ -61,8 +61,8 @@ func TestSymmetricDifference(t *testing.T) {
 			Set[E]{{1, 5}, {9, 13}, {17, 21}, {25, 29}}.SymmetricDifference(Set[E]{{5, 25}}),
 			Set[E]{{1, 9}, {13, 17}, {21, 29}},
 		},
-		{SymmetricDifference[E](), Set[E]{}},
-		{SymmetricDifference(Set[E]{}), Set[E]{}},
+		{Combine(SymmetricDifference[E]), Set[E]{}},
+		{Combine(SymmetricDifference, Set[E]{}), Set[E]{}},
 		{
 			func() Set[E] {
 				var x2, x3, x5 Set[E]
@@ -79,7 +79,7 @@ func TestSymmetricDifference(t *testing.T) {
 					x5 = Add(x5, One(E(i)))
 				}
 
-				return SymmetricDifference(x2, x3, x5)
+				return Combine(SymmetricDifference, x2, x3, x5)
 			}(),
 			Set[E]{{2, 6}, {8, 10}, {14, 15}, {16, 17}, {21, 23}, {25, 29}, {30, 31}},
 		},

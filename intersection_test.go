@@ -25,8 +25,8 @@ func TestIntersection(t *testing.T) {
 			Set[E]{{3, 11}, {13, 21}}.Intersection(Set[E]{{1, 5}, {9, 15}, {19, 23}}),
 			Set[E]{{3, 5}, {9, 11}, {13, 15}, {19, 21}},
 		},
-		{Intersection[E](), Set[E]{}},
-		{Intersection(Set[E]{}), Set[E]{}},
+		{Combine(Intersection[E]), Set[E]{}},
+		{Combine(Intersection, Set[E]{}), Set[E]{}},
 		{
 			func() Set[E] {
 				var x2, x3, x5 Set[E]
@@ -43,7 +43,7 @@ func TestIntersection(t *testing.T) {
 					x5 = Add(x5, One(E(i)))
 				}
 
-				return Intersection(x2, x3, x5)
+				return Combine(Intersection, x2, x3, x5)
 			}(),
 			Set[E]{{30, 31}, {60, 61}, {90, 91}},
 		},

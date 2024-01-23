@@ -4,17 +4,12 @@ import "sort"
 
 // Union returns the set of elements that are in either x, or y, or both.
 func (x Set[E]) Union(y Set[E]) Set[E] {
-	return UnionInto(nil, x, y)
+	return Union(nil, x, y)
 }
 
-// Union returns the set of elements that are in any of sets.
-func Union[E Elem[E]](sets ...Set[E]) Set[E] {
-	return combine(UnionInto, sets...)
-}
-
-// UnionInto returns the set of elements that are in either x, or y, or both,
-// overwriting z. z must not be x or y; z must not be used after.
-func UnionInto[E Elem[E]](z, x, y Set[E]) Set[E] {
+// Union returns the set of elements that are in either x, or y, or both,
+// overwriting z. z must not be x or y and z must not be used after.
+func Union[E Elem[E]](z, x, y Set[E]) Set[E] {
 	z = z[:0]
 
 	for {

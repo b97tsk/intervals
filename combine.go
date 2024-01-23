@@ -1,9 +1,9 @@
 package intervals
 
-func combine[E Elem[E]](
-	op func(z, x, y Set[E]) Set[E],
-	sets ...Set[E],
-) Set[E] {
+// Combine applies set operation op over sets, returning the end result.
+// op can be any of [Difference], [Intersection], [SymmetricDifference] and
+// [Union].
+func Combine[E Elem[E]](op func(z, x, y Set[E]) Set[E], sets ...Set[E]) Set[E] {
 	if len(sets) == 0 {
 		return nil
 	}

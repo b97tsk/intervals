@@ -105,11 +105,11 @@ func CollectInto[E Elem[E]](x Set[E], s ...Interval[E]) Set[E] {
 
 // Add adds range [r.Low, r.High) into x, returning the modified Set.
 func Add[E Elem[E]](x Set[E], r Interval[E]) Set[E] {
-	return AddRange(x, r.Low, r.High)
+	return addRange(x, r.Low, r.High)
 }
 
-// AddRange adds range [lo, hi) into x, returning the modified Set.
-func AddRange[E Elem[E]](x Set[E], lo, hi E) Set[E] {
+// addRange adds range [lo, hi) into x, returning the modified Set.
+func addRange[E Elem[E]](x Set[E], lo, hi E) Set[E] {
 	i := sort.Search(len(x), func(i int) bool { return x[i].Low.Compare(lo) > 0 })
 	// j := sort.Search(len(x), func(i int) bool { return x[i].High.Compare(hi) > 0 })
 
@@ -174,11 +174,11 @@ func AddRange[E Elem[E]](x Set[E], lo, hi E) Set[E] {
 
 // Delete removes range [r.Low, r.High) from x, returning the modified Set.
 func Delete[E Elem[E]](x Set[E], r Interval[E]) Set[E] {
-	return DeleteRange(x, r.Low, r.High)
+	return deleteRange(x, r.Low, r.High)
 }
 
-// DeleteRange removes range [lo, hi) from x, returning the modified Set.
-func DeleteRange[E Elem[E]](x Set[E], lo, hi E) Set[E] {
+// deleteRange removes range [lo, hi) from x, returning the modified Set.
+func deleteRange[E Elem[E]](x Set[E], lo, hi E) Set[E] {
 	i := sort.Search(len(x), func(i int) bool { return x[i].High.Compare(lo) > 0 })
 	// j := sort.Search(len(x), func(i int) bool { return x[i].Low.Compare(hi) > 0 })
 
