@@ -61,8 +61,8 @@ func TestDifference(t *testing.T) {
 			Set[E]{{1, 5}, {9, 13}, {17, 21}, {25, 29}}.Difference(Set[E]{{5, 25}}),
 			Set[E]{{1, 5}, {25, 29}},
 		},
-		{Combine(Difference[E]), Set[E]{}},
-		{Combine(Difference, Set[E]{}), Set[E]{}},
+		{Reduce(Difference[E]), Set[E]{}},
+		{Reduce(Difference, Set[E]{}), Set[E]{}},
 		{
 			func() Set[E] {
 				var x2, x3, x5 Set[E]
@@ -79,7 +79,7 @@ func TestDifference(t *testing.T) {
 					x5 = Add(x5, One(E(i)))
 				}
 
-				return Combine(Difference, x2, x3, x5)
+				return Reduce(Difference, x2, x3, x5)
 			}(),
 			Set[E]{{2, 3}, {4, 5}, {8, 9}, {14, 15}, {16, 17}, {22, 23}, {26, 27}, {28, 29}},
 		},

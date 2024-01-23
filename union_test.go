@@ -33,8 +33,8 @@ func TestUnion(t *testing.T) {
 			Set[E]{{3, 11}, {13, 21}}.Union(Set[E]{{1, 5}, {9, 15}, {19, 23}}),
 			Set[E]{{1, 23}},
 		},
-		{Combine(Union[E]), Set[E]{}},
-		{Combine(Union, Set[E]{}), Set[E]{}},
+		{Reduce(Union[E]), Set[E]{}},
+		{Reduce(Union, Set[E]{}), Set[E]{}},
 		{
 			func() Set[E] {
 				var x2, x3, x5 Set[E]
@@ -51,7 +51,7 @@ func TestUnion(t *testing.T) {
 					x5 = Add(x5, One(E(i)))
 				}
 
-				return Combine(Union, x2, x3, x5)
+				return Reduce(Union, x2, x3, x5)
 			}(),
 			Set[E]{{2, 7}, {8, 11}, {12, 13}, {14, 17}, {18, 19}, {20, 23}, {24, 29}, {30, 31}},
 		},
