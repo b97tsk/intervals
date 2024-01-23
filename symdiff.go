@@ -71,21 +71,21 @@ func SymmetricDifference[E Elem[E]](z, x, y Set[E]) Set[E] {
 	}
 }
 
-func appendInterval[E Elem[E]](s Set[E], r Interval[E]) Set[E] {
-	if n := len(s); n != 0 {
-		if r1 := &s[n-1]; r1.High.Compare(r.Low) == 0 {
+func appendInterval[E Elem[E]](x Set[E], r Interval[E]) Set[E] {
+	if n := len(x); n != 0 {
+		if r1 := &x[n-1]; r1.High.Compare(r.Low) == 0 {
 			r1.High = r.High
-			return s
+			return x
 		}
 	}
 
-	return append(s, r)
+	return append(x, r)
 }
 
-func appendIntervals[E Elem[E]](s Set[E], rs ...Interval[E]) Set[E] {
-	if len(rs) == 0 {
-		return s
+func appendIntervals[E Elem[E]](x Set[E], s ...Interval[E]) Set[E] {
+	if len(s) == 0 {
+		return x
 	}
 
-	return append(appendInterval(s, rs[0]), rs[1:]...)
+	return append(appendInterval(x, s[0]), s[1:]...)
 }
