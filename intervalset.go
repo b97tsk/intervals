@@ -261,17 +261,7 @@ func (x Set[E]) ContainsRange(lo, hi E) bool {
 
 // Equal reports whether x is identical to y.
 func (x Set[E]) Equal(y Set[E]) bool {
-	if len(x) != len(y) {
-		return false
-	}
-
-	for i := range x {
-		if !x[i].Equal(y[i]) {
-			return false
-		}
-	}
-
-	return true
+	return slices.EqualFunc(x, y, Interval[E].Equal)
 }
 
 // Extent returns the smallest Interval that contains every element in x.
