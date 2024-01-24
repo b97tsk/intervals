@@ -246,19 +246,8 @@ func deleteRange[E Elem[E]](x Set[E], lo, hi E) Set[E] {
 
 // Contains reports whether x contains every element in range [r.Low, r.High).
 func (x Set[E]) Contains(r Interval[E]) bool {
-	return x.ContainsRange(r.Low, r.High)
-}
-
-// ContainsOne reports whether x contains a single element v.
-func (x Set[E]) ContainsOne(v E) bool {
-	i := sort.Search(len(x), func(i int) bool { return x[i].High.Compare(v) > 0 })
-	return i < len(x) && x[i].Low.Compare(v) <= 0
-}
-
-// ContainsRange reports whether x contains every element in range [lo, hi).
-func (x Set[E]) ContainsRange(lo, hi E) bool {
-	i := sort.Search(len(x), func(i int) bool { return x[i].High.Compare(lo) > 0 })
-	return i < len(x) && x[i].Low.Compare(lo) <= 0 && x[i].High.Compare(hi) >= 0 && lo.Compare(hi) < 0
+	x = x[sort.Search(len(x), func(i int) bool { return x[i].High.Compare(r.Low) > 0 }):]
+	return len(x) != 0 && x[0].Low.Compare(r.Low) <= 0 && x[0].High.Compare(r.High) >= 0 && r.Low.Compare(r.High) < 0
 }
 
 // Equal reports whether x is identical to y.
