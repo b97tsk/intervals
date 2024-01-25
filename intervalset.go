@@ -26,15 +26,15 @@ type Interval[E Elem[E]] struct {
 }
 
 // One returns an Interval that only contains a single element v.
-//
-// If v is the maximum value of E, One returns an invalid Interval.
+// If there is no element next to v, One returns an invalid Interval.
+// Note that calling Set method on an invalid Interval panics.
 func One[E Enum[E]](v E) Interval[E] {
 	return Range(v, v.Next())
 }
 
 // Range returns an Interval of range [lo, hi).
-//
 // If lo.Compare(hi) >= 0, Range returns an invalid Interval.
+// Note that calling Set method on an invalid Interval panics.
 func Range[E Elem[E]](lo, hi E) Interval[E] {
 	return Interval[E]{lo, hi}
 }
@@ -45,14 +45,17 @@ func (r Interval[E]) Equal(r2 Interval[E]) bool {
 }
 
 // Set returns the set of elements that are in r.
-//
-// If r is an invalid Interval, Set returns an empty set.
+// If r is the zero value, Set returns an empty set.
+// If r is an invalid Interval, Set panics.
 func (r Interval[E]) Set() Set[E] {
-	if r.Low.Compare(r.High) >= 0 {
+	switch c := r.Low.Compare(r.High); {
+	case c < 0:
+		return Set[E]{r}
+	case c == 0 && r.Equal(Interval[E]{}):
 		return nil
 	}
 
-	return Set[E]{r}
+	panic("invalid Interval")
 }
 
 // A Set is a slice of separate intervals sorted in ascending order.

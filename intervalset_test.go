@@ -22,7 +22,7 @@ func TestCreation(t *testing.T) {
 			Set[E]{{1, 5}},
 		},
 		{
-			Range[E](5, 1).Set(),
+			Interval[E]{}.Set(),
 			nil,
 		},
 		{
@@ -53,6 +53,9 @@ func TestCreation(t *testing.T) {
 			t.Logf("Case %v: want %v, but got %v", i, c.Expected, c.Actual)
 		}
 	}
+
+	shouldPanic(t, func() { _ = Range[E](5, 1).Set() }, "Range[E](5, 1).Set() didn't panic.")
+	shouldPanic(t, func() { _ = Range[E](5, 5).Set() }, "Range[E](5, 5).Set() didn't panic.")
 }
 
 func TestAdd(t *testing.T) {
@@ -203,4 +206,17 @@ func TestExtent(t *testing.T) {
 			t.Logf("Case %v: want %v, but got %v", i, c.Expected, c.Actual)
 		}
 	}
+}
+
+func shouldPanic(t *testing.T, f func(), name string) {
+	t.Helper()
+
+	defer func() {
+		if recover() == nil {
+			t.Log(name, "did not panic.")
+			t.Fail()
+		}
+	}()
+
+	f()
 }
