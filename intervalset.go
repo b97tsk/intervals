@@ -48,14 +48,14 @@ func (r Interval[E]) Equal(r2 Interval[E]) bool {
 // A valid Interval r either satisfies r.Low.Compare(r.High) < 0 or equals to
 // the zero value.
 func (r Interval[E]) IsValid() bool {
-	return r.cmp() <= 0
+	return r.test() <= 0
 }
 
 // Set returns the set of elements that are in r.
 // If r is the zero value, Set returns an empty set.
 // If r is an invalid Interval, Set panics.
 func (r Interval[E]) Set() Set[E] {
-	switch r.cmp() {
+	switch r.test() {
 	case -1:
 		return Set[E]{r}
 	case 0:
@@ -65,7 +65,7 @@ func (r Interval[E]) Set() Set[E] {
 	panic("invalid Interval")
 }
 
-func (r Interval[E]) cmp() int {
+func (r Interval[E]) test() int {
 	switch c := r.Low.Compare(r.High); {
 	case c < 0:
 		return -1
