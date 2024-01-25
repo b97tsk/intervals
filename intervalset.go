@@ -44,6 +44,14 @@ func (r Interval[E]) Equal(r2 Interval[E]) bool {
 	return r.Low.Compare(r2.Low) == 0 && r.High.Compare(r2.High) == 0
 }
 
+// IsValid reports whether r is a valid Interval.
+// A valid Interval r either satisfies r.Low.Compare(r.High) < 0 or equals to
+// the zero value.
+func (r Interval[E]) IsValid() bool {
+	c := r.Low.Compare(r.High)
+	return c < 0 || c == 0 && r.Equal(Interval[E]{})
+}
+
 // Set returns the set of elements that are in r.
 // If r is the zero value, Set returns an empty set.
 // If r is an invalid Interval, Set panics.

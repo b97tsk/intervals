@@ -7,6 +7,25 @@ import (
 	"github.com/b97tsk/intervals/elems"
 )
 
+func TestIsValid(t *testing.T) {
+	type E = elems.Int
+
+	assertions := []bool{
+		Interval[E]{}.IsValid(),
+		One[E](0).IsValid(),
+		Range[E](1, 5).IsValid(),
+		!Range[E](5, 1).IsValid(),
+		!Range[E](5, 5).IsValid(),
+	}
+
+	for i, ok := range assertions {
+		if !ok {
+			t.Fail()
+			t.Logf("Case %v: FAILED", i)
+		}
+	}
+}
+
 func TestCreation(t *testing.T) {
 	type E = elems.Int
 
