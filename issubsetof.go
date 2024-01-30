@@ -7,7 +7,7 @@ func (x Set[E]) IsSubsetOf(y Set[E]) bool {
 	inv := false
 
 	for {
-		if len(x) < len(y) {
+		if len(x) == 0 {
 			x, y = y, x
 			inv = !inv
 		}

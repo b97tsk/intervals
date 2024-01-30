@@ -5,7 +5,7 @@ import "sort"
 // Overlaps reports whether the intersection of x and y is not empty.
 func (x Set[E]) Overlaps(y Set[E]) bool {
 	for {
-		if len(x) < len(y) {
+		if len(x) == 0 {
 			x, y = y, x
 		}
 

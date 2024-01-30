@@ -15,7 +15,7 @@ func Difference[E Elem[E]](z, x, y Set[E]) Set[E] {
 	inv := false
 
 	for {
-		if len(x) < len(y) {
+		if len(x) == 0 {
 			x, y = y, x
 			inv = !inv
 		}
