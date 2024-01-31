@@ -15,12 +15,12 @@ func Difference[E Elem[E]](z, x, y Set[E]) Set[E] {
 	inv := false
 
 	for {
-		if len(x) == 0 {
-			x, y = y, x
-			inv = !inv
-		}
+		if len(x) == 0 || len(y) == 0 {
+			if len(x) == 0 {
+				x, y = y, x
+				inv = !inv
+			}
 
-		if len(y) == 0 {
 			if !inv {
 				z = append(z, x...)
 			}

@@ -15,13 +15,12 @@ func SymmetricDifference[E Elem[E]](z, x, y Set[E]) Set[E] {
 	z = z[:0]
 
 	for {
-		if len(x) == 0 {
-			x, y = y, x
-		}
+		if len(x) == 0 || len(y) == 0 {
+			if len(x) == 0 {
+				x, y = y, x
+			}
 
-		if len(y) == 0 {
-			z = appendIntervals(z, x...)
-			return z
+			return appendIntervals(z, x...)
 		}
 
 		if x[0].High.Compare(y[0].High) > 0 {

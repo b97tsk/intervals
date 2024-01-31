@@ -13,11 +13,11 @@ func Union[E Elem[E]](z, x, y Set[E]) Set[E] {
 	z = z[:0]
 
 	for {
-		if len(x) == 0 {
-			x, y = y, x
-		}
+		if len(x) == 0 || len(y) == 0 {
+			if len(x) == 0 {
+				x, y = y, x
+			}
 
-		if len(y) == 0 {
 			return append(z, x...)
 		}
 
