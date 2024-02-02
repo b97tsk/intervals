@@ -163,14 +163,14 @@ func TestContains(t *testing.T) {
 	s := Set[E]{{1, 3}, {5, 7}}
 
 	assertions := []bool{
-		s.Contains(Unit[E](0)) == false,
-		s.Contains(Unit[E](1)) == true,
-		s.Contains(Unit[E](2)) == true,
-		s.Contains(Unit[E](3)) == false,
-		s.Contains(Unit[E](4)) == false,
-		s.Contains(Unit[E](5)) == true,
-		s.Contains(Unit[E](6)) == true,
-		s.Contains(Unit[E](7)) == false,
+		s.ContainsUnit(0) == false,
+		s.ContainsUnit(1) == true,
+		s.ContainsUnit(2) == true,
+		s.ContainsUnit(3) == false,
+		s.ContainsUnit(4) == false,
+		s.ContainsUnit(5) == true,
+		s.ContainsUnit(6) == true,
+		s.ContainsUnit(7) == false,
 		s.Contains(Range[E](1, 3)) == true,
 		s.Contains(Range[E](3, 5)) == false,
 		s.Contains(Range[E](5, 7)) == true,

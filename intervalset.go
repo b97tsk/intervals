@@ -271,6 +271,13 @@ func (x Set[E]) Contains(r Interval[E]) bool {
 	return len(x) != 0 && x[0].Low.Compare(r.Low) <= 0 && x[0].High.Compare(r.High) >= 0 && r.Low.Compare(r.High) < 0
 }
 
+// ContainsUnit reports whether x contains a single element v.
+// Faster than x.Contains(Unit(v)).
+func (x Set[E]) ContainsUnit(v E) bool {
+	x = x[sort.Search(len(x), func(i int) bool { return x[i].High.Compare(v) > 0 }):]
+	return len(x) != 0 && x[0].Low.Compare(v) <= 0
+}
+
 // Equal reports whether x is identical to y.
 func (x Set[E]) Equal(y Set[E]) bool {
 	return slices.EqualFunc(x, y, Interval[E].Equal)
