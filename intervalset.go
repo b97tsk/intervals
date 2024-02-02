@@ -25,10 +25,10 @@ type Interval[E Elem[E]] struct {
 	High E // exclusive
 }
 
-// One returns an Interval that only contains a single element v.
-// If there is no element next to v, One returns an invalid Interval.
+// Unit returns an Interval that only contains a single element v.
+// If there is no element next to v, Unit returns an invalid Interval.
 // Note that calling Set method on an invalid Interval panics.
-func One[E Enum[E]](v E) Interval[E] {
+func Unit[E Enum[E]](v E) Interval[E] {
 	return Range(v, v.Next())
 }
 

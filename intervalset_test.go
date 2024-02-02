@@ -12,7 +12,7 @@ func TestIsValid(t *testing.T) {
 
 	assertions := []bool{
 		Interval[E]{}.IsValid(),
-		One[E](0).IsValid(),
+		Unit[E](0).IsValid(),
 		Range[E](1, 5).IsValid(),
 		!Range[E](5, 1).IsValid(),
 		!Range[E](5, 5).IsValid(),
@@ -33,7 +33,7 @@ func TestCreation(t *testing.T) {
 		Actual, Expected Set[E]
 	}{
 		{
-			One[E](1).Set(),
+			Unit[E](1).Set(),
 			Set[E]{{1, 2}},
 		},
 		{
@@ -163,14 +163,14 @@ func TestContains(t *testing.T) {
 	s := Set[E]{{1, 3}, {5, 7}}
 
 	assertions := []bool{
-		s.Contains(One[E](0)) == false,
-		s.Contains(One[E](1)) == true,
-		s.Contains(One[E](2)) == true,
-		s.Contains(One[E](3)) == false,
-		s.Contains(One[E](4)) == false,
-		s.Contains(One[E](5)) == true,
-		s.Contains(One[E](6)) == true,
-		s.Contains(One[E](7)) == false,
+		s.Contains(Unit[E](0)) == false,
+		s.Contains(Unit[E](1)) == true,
+		s.Contains(Unit[E](2)) == true,
+		s.Contains(Unit[E](3)) == false,
+		s.Contains(Unit[E](4)) == false,
+		s.Contains(Unit[E](5)) == true,
+		s.Contains(Unit[E](6)) == true,
+		s.Contains(Unit[E](7)) == false,
 		s.Contains(Range[E](1, 3)) == true,
 		s.Contains(Range[E](3, 5)) == false,
 		s.Contains(Range[E](5, 7)) == true,
